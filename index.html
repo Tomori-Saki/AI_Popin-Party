@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI_Popin'Party</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="bg-noise"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <div>
+          <div class="brand-title">AI_Popin'Party</div>
+          <div class="brand-sub">Poppin' Party 互动式 AI Chat</div>
+        </div>
+      </div>
+      <div class="topbar-pill">Frosted Pink Edition</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel panel-left">
+        <div class="panel-header">
+          <h2>API 设置</h2>
+          <p>在左侧录入密钥，右侧选择角色开始聊天。</p>
+        </div>
+
+        <div class="form-card">
+          <label class="field">
+            <span>API Key</span>
+            <input type="password" id="apiKey" placeholder="在此输入你的 Key" />
+          </label>
+
+          <label class="field">
+            <span>API 地址（锁定）</span>
+            <input type="text" id="apiEndpoint" readonly />
+          </label>
+
+          <label class="field">
+            <span>模型</span>
+            <input type="text" id="modelName" readonly />
+          </label>
+
+          <div class="hint">
+            若不填写 Key，将启用本地示例回复。
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-title">使用提示</div>
+          <div class="info-text">
+            右侧角色卡片模拟游戏界面布局。点击角色进入对话，再次点击左上角返回选择。
+          </div>
+        </div>
+      </section>
+
+      <section class="panel panel-right">
+        <div id="selectView" class="select-view">
+          <div class="panel-header compact">
+            <h2>角色选择</h2>
+            <p>点击任意角色进入聊天界面。</p>
+          </div>
+          <div id="characterGrid" class="character-grid"></div>
+        </div>
+
+        <div id="chatView" class="chat-view hidden">
+          <div class="chat-header">
+            <div class="chat-header-left">
+              <button id="backBtn" class="back-btn">返回角色选择</button>
+              <div class="chat-header-info">
+                <div class="chat-name" id="chatName"></div>
+                <div class="chat-meta" id="chatMeta"></div>
+              </div>
+            </div>
+            <button id="newChatBtn" class="new-chat-btn">新聊天</button>
+          </div>
+
+          <div class="chat-profile" id="chatProfile"></div>
+
+          <div id="chatMessages" class="chat-messages"></div>
+
+          <div class="chat-input">
+            <input id="chatInput" type="text" placeholder="输入内容，按 Enter 发送" />
+            <button id="sendBtn">发送</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
