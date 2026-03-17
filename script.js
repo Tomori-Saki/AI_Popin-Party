@@ -20,6 +20,9 @@ const STORAGE_KEYS = {
   chats: "ai_popin_chats"
 };
 
+const ASSET_VERSION = "20260317";
+const withVersion = (url) => `${url}${url.includes("?") ? "&" : "?"}v=${ASSET_VERSION}`;
+
 let characters = [];
 let currentCharacter = null;
 let chatHistory = [];
@@ -143,12 +146,11 @@ const hydrateApiSettings = (data) => {
 
 const renderCards = () => {
   characterGrid.innerHTML = "";
-  const cacheBust = Date.now();
   characters.forEach((character) => {
     const card = document.createElement("div");
     card.className = "character-card";
     card.style.setProperty("--accent", character.accent);
-    card.style.backgroundImage = `url(${character.select_image}?v=${cacheBust})`;
+    card.style.backgroundImage = `url(${withVersion(character.select_image)})`;
     card.innerHTML = `
       <div class="card-title-row">
         <div class="en">${character.name_en}</div>
@@ -228,8 +230,7 @@ const selectCharacter = (id) => {
   chatMeta.textContent = `${character.band} · ${character.role}`;
   chatProfile.classList.add("hidden");
 
-  const cacheBust = Date.now();
-  chatView.style.backgroundImage = `url(${character.select_image}?v=${cacheBust})`;
+  chatView.style.backgroundImage = `url(${withVersion(character.select_image)})`;
   chatView.classList.add("has-bg");
 
   chatHistory = loadChatHistory(character.id);
@@ -362,9 +363,9 @@ const sendMessage = async () => {
 };
 
 Promise.allSettled([
-  fetch("character.json").then((res) => res.json()),
-  fetch("world.json").then((res) => res.json()),
-  fetch("eample.json").then((res) => res.json())
+  fetch(withVersion("character.json")).then((res) => res.json()),
+  fetch(withVersion("world.json")).then((res) => res.json()),
+  fetch(withVersion("eample.json")).then((res) => res.json())
 ]).then((results) => {
   const [characterResult, worldResult, exampleResult] = results;
   if (characterResult.status !== "fulfilled") {
