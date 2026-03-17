@@ -45,6 +45,16 @@ const escapeHtml = (text) => {
   return text.replace(/[&<>"']/g, (m) => map[m]);
 };
 
+const scrollToBottom = (behavior = "auto") => {
+  if (!chatMessages) return;
+  const top = chatMessages.scrollHeight;
+  try {
+    chatMessages.scrollTo({ top, behavior });
+  } catch {
+    chatMessages.scrollTop = top;
+  }
+};
+
 const addMessage = (role, content, options = {}) => {
   const message = document.createElement("div");
   message.className = `message ${role}${options.streaming ? " streaming" : ""}`;
@@ -67,14 +77,14 @@ const addMessage = (role, content, options = {}) => {
     message.appendChild(rollbackBtn);
   }
   chatMessages.appendChild(message);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  scrollToBottom("auto");
   return message;
 };
 
 const updateMessage = (element, content) => {
   const textEl = element.querySelector(".message-text") || element;
   textEl.innerHTML = escapeHtml(content);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  scrollToBottom("auto");
 };
 
 const getStoredChats = () => {
@@ -184,6 +194,7 @@ const renderChatMessages = () => {
       addMessage("bot", item.content);
     }
   });
+  scrollToBottom("auto");
 };
 
 const rollbackToIndex = (index) => {
@@ -350,21 +361,24 @@ const sendMessage = async () => {
   }
 };
 
-Promise.all([
+Promise.allSettled([
   fetch("character.json").then((res) => res.json()),
-  fetch("world.json").then((res) => res.json()).catch(() => null),
-  fetch("eample.json").then((res) => res.json()).catch(() => null)
-])
-  .then(([data, world, examples]) => {
-    characters = data.characters || [];
-    worldData = world;
-    exampleData = examples;
-    hydrateApiSettings(data);
-    renderCards();
-  })
-  .catch(() => {
-    characterGrid.innerHTML = "读取角色数据失败，请检查角色/世界观/示例文件。";
-  });
+  fetch("world.json").then((res) => res.json()),
+  fetch("eample.json").then((res) => res.json())
+]).then((results) => {
+  const [characterResult, worldResult, exampleResult] = results;
+  if (characterResult.status !== "fulfilled") {
+    characterGrid.innerHTML = "读取角色数据失败，请检查角色文件。";
+    return;
+  }
+
+  const data = characterResult.value;
+  characters = data.characters || [];
+  worldData = worldResult.status === "fulfilled" ? worldResult.value : null;
+  exampleData = exampleResult.status === "fulfilled" ? exampleResult.value : null;
+  hydrateApiSettings(data);
+  renderCards();
+});
 
 sendBtn.addEventListener("click", sendMessage);
 chatInput.addEventListener("keydown", (event) => {
