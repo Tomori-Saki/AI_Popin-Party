@@ -22,41 +22,6 @@
     </header>
 
     <main class="layout">
-      <section class="panel panel-left">
-        <div class="panel-header">
-          <h2>API 设置</h2>
-          <p>在左侧录入密钥，右侧选择角色开始聊天。</p>
-        </div>
-
-        <div class="form-card">
-          <label class="field">
-            <span>API Key</span>
-            <input type="password" id="apiKey" placeholder="在此输入你的 Key" />
-          </label>
-
-          <label class="field">
-            <span>API 地址（锁定）</span>
-            <input type="text" id="apiEndpoint" readonly />
-          </label>
-
-          <label class="field">
-            <span>模型</span>
-            <input type="text" id="modelName" readonly />
-          </label>
-
-          <div class="hint">
-            若不填写 Key，将启用本地示例回复。
-          </div>
-        </div>
-
-        <div class="info-card">
-          <div class="info-title">使用提示</div>
-          <div class="info-text">
-            右侧角色卡片模拟游戏界面布局。点击角色进入对话，再次点击左上角返回选择。
-          </div>
-        </div>
-      </section>
-
       <section class="panel panel-right">
         <div id="selectView" class="select-view">
           <div class="panel-header compact">
@@ -89,6 +54,37 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <div id="apiModal" class="api-modal hidden">
+    <div class="api-modal-backdrop"></div>
+    <div class="api-modal-card">
+      <div class="panel-header">
+        <h2>API 设置</h2>
+        <p>填写后即可开始聊天，设置会自动保存。</p>
+      </div>
+
+      <div class="form-card">
+        <label class="field">
+          <span>API Key</span>
+          <input type="password" id="apiKey" placeholder="在此输入你的 Key" />
+        </label>
+
+        <label class="field">
+          <span>API 地址（锁定）</span>
+          <input type="text" id="apiEndpoint" readonly />
+        </label>
+
+        <label class="field">
+          <span>模型</span>
+          <input type="text" id="modelName" readonly />
+        </label>
+      </div>
+
+      <div class="api-modal-actions">
+        <button id="saveApiBtn" class="new-chat-btn">保存设置</button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js?v=20260317"></script>

@@ -12,6 +12,8 @@ const chatInput = document.getElementById("chatInput");
 const sendBtn = document.getElementById("sendBtn");
 const backBtn = document.getElementById("backBtn");
 const newChatBtn = document.getElementById("newChatBtn");
+const apiModal = document.getElementById("apiModal");
+const saveApiBtn = document.getElementById("saveApiBtn");
 
 const STORAGE_KEYS = {
   apiKey: "ai_popin_api_key",
@@ -110,6 +112,18 @@ const loadChatHistory = (characterId) => {
   return allChats[characterId] || [];
 };
 
+const showApiModal = () => {
+  if (apiModal) {
+    apiModal.classList.remove("hidden");
+  }
+};
+
+const hideApiModal = () => {
+  if (apiModal) {
+    apiModal.classList.add("hidden");
+  }
+};
+
 const hydrateApiSettings = (data) => {
   const storedKey = localStorage.getItem(STORAGE_KEYS.apiKey) || "";
   const storedEndpoint = localStorage.getItem(STORAGE_KEYS.apiEndpoint);
@@ -129,6 +143,12 @@ const hydrateApiSettings = (data) => {
 
   if (finalEndpoint) {
     localStorage.setItem(STORAGE_KEYS.apiEndpoint, finalEndpoint);
+  }
+
+  if (!apiKeyInput.value.trim()) {
+    showApiModal();
+  } else {
+    hideApiModal();
   }
 
   apiKeyInput.addEventListener("input", () => {
@@ -235,6 +255,7 @@ const selectCharacter = (id) => {
 
   chatHistory = loadChatHistory(character.id);
   renderChatMessages();
+  scrollToBottom("auto");
 
   selectView.classList.add("hidden");
   chatView.classList.remove("hidden");
@@ -396,3 +417,13 @@ backBtn.addEventListener("click", () => {
 });
 
 newChatBtn.addEventListener("click", startNewChat);
+
+if (saveApiBtn) {
+  saveApiBtn.addEventListener("click", () => {
+    if (apiKeyInput.value.trim()) {
+      hideApiModal();
+    } else {
+      apiKeyInput.focus();
+    }
+  });
+}

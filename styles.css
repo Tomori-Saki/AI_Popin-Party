@@ -101,7 +101,7 @@ body {
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(260px, 320px) 1fr;
+  grid-template-columns: 1fr;
   gap: 24px;
 }
 
@@ -405,6 +405,63 @@ body {
 
 @media (max-width: 900px) {
   body {
+    overflow: hidden;
+  }
+
+  .app-shell {
+    height: 100vh;
+    padding: 16px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    flex: 1;
+    min-height: 0;
+    gap: 16px;
+  }
+
+  .panel {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .panel-right {
+    min-height: 0;
+    flex: 1;
+  }
+
+  .chat-view {
+    min-height: 0;
+    flex: 1;
+  }
+
+  .chat-messages {
+    min-height: 0;
+    max-height: none;
+  }
+
+  .chat-input input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .chat-input button {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .message {
+    max-width: 88%;
+  }
+}
+@media (max-width: 900px) {
+  body {
     overflow: auto;
   }
 
@@ -457,4 +514,37 @@ body {
   .message {
     max-width: 88%;
   }
+}
+
+.api-modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 10;
+}
+
+.api-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 5, 9, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+.api-modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 92vw);
+  background: var(--glass-strong);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 16px;
+}
+
+.api-modal-actions {
+  display: flex;
+  justify-content: flex-end;
 }
