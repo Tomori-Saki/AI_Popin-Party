@@ -60,6 +60,13 @@ const scrollToBottom = (behavior = "auto") => {
   }
 };
 
+const scrollToBottomSoon = () => {
+  requestAnimationFrame(() => {
+    scrollToBottom("auto");
+    setTimeout(() => scrollToBottom("auto"), 80);
+  });
+};
+
 const addMessage = (role, content, options = {}) => {
   const message = document.createElement("div");
   message.className = `message ${role}${options.streaming ? " streaming" : ""}`;
@@ -255,10 +262,11 @@ const selectCharacter = (id) => {
 
   chatHistory = loadChatHistory(character.id);
   renderChatMessages();
-  scrollToBottom("auto");
 
   selectView.classList.add("hidden");
   chatView.classList.remove("hidden");
+
+  scrollToBottomSoon();
 };
 
 const typewriter = (element, fullText, speed = 18) => {
