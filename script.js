@@ -29,6 +29,7 @@ let characters = [];
 let currentCharacter = null;
 let chatHistory = [];
 let activeStream = null;
+let pendingScrollRaf = null;
 let worldData = null;
 let exampleData = null;
 
@@ -60,10 +61,19 @@ const scrollToBottom = (behavior = "auto") => {
   }
 };
 
+const scrollToBottomRaf = () => {
+  if (pendingScrollRaf) return;
+  pendingScrollRaf = requestAnimationFrame(() => {
+    pendingScrollRaf = null;
+    scrollToBottom("auto");
+  });
+};
+
 const scrollToBottomSoon = () => {
   requestAnimationFrame(() => {
     scrollToBottom("auto");
-    setTimeout(() => scrollToBottom("auto"), 80);
+    setTimeout(() => scrollToBottom("auto"), 50);
+    setTimeout(() => scrollToBottom("auto"), 150);
   });
 };
 
@@ -89,14 +99,20 @@ const addMessage = (role, content, options = {}) => {
     message.appendChild(rollbackBtn);
   }
   chatMessages.appendChild(message);
-  scrollToBottom("auto");
+  if (!options.skipScroll) {
+    scrollToBottom("auto");
+  }
   return message;
 };
 
-const updateMessage = (element, content) => {
+const updateMessage = (element, content, streaming = false) => {
   const textEl = element.querySelector(".message-text") || element;
   textEl.innerHTML = escapeHtml(content);
-  scrollToBottom("auto");
+  if (streaming) {
+    scrollToBottomRaf();
+  } else {
+    scrollToBottom("auto");
+  }
 };
 
 const getStoredChats = () => {
@@ -218,9 +234,9 @@ const renderChatMessages = () => {
   chatMessages.innerHTML = "";
   chatHistory.forEach((item, index) => {
     if (item.role === "user") {
-      addMessage("user", item.content, { enableRollback: true, index });
+      addMessage("user", item.content, { enableRollback: true, index, skipScroll: true });
     } else {
-      addMessage("bot", item.content);
+      addMessage("bot", item.content, { skipScroll: true });
     }
   });
   scrollToBottom("auto");
@@ -327,7 +343,7 @@ const streamChat = async (payload, messageEl, signal) => {
         const delta = json.choices?.[0]?.delta?.content;
         if (delta) {
           finalText += delta;
-          updateMessage(messageEl, finalText);
+          updateMessage(messageEl, finalText, true);
         }
       } catch {
         // ignore malformed chunks
@@ -381,11 +397,13 @@ const sendMessage = async () => {
       chatHistory.push({ role: "assistant", content: streamText });
       saveChatHistory();
     }
+    scrollToBottom("auto");
     activeStream = null;
   } catch (error) {
     messageEl.classList.remove("streaming");
     const detail = error?.message ? `连接失败：${error.message}` : "连接失败：请检查 API Key 或网络";
     await typewriter(messageEl, detail, 12);
+    scrollToBottom("auto");
     console.error("API error:", error);
     activeStream = null;
   }
